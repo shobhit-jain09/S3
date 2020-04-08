@@ -1,7 +1,11 @@
 package com.example.newdemo.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +76,24 @@ public class FileUploadController {
 		}
 		
     }
+    
+    @GetMapping("/downloadfromS3/base64")
+	public Map<String, String > downloadfromS3AsBase64() throws Exception {
+		File newfile = null;
+		try {
+			newfile = fileService.download();
+			FileInputStream fileInputStreamReader = new FileInputStream(newfile);
+			byte[] bytes = new byte[(int) newfile.length()];
+			fileInputStreamReader.read(bytes);
+			String encodedBase64 = new String(Base64.getEncoder().encode(bytes));
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("base64", encodedBase64);
+			return map;
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
     
     
 }
